@@ -1,4 +1,4 @@
-# Currencyrates
+# CurrencyRates
 Touch ups on symphony, less legacy php and actual work with currency rates
 
 ## What I initially thought and wanted to achieve, before setting Symfony project up.
