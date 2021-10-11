@@ -41,3 +41,6 @@ with ISO currency names, symbols and all the required details
 - connector, dto and collection implementation went according to plan, and i'm mildly satisfied
 - delayed trying MoneyPHP in favour of more time with purely Symfony 
 - spent a ot more time reading than I expected
+
+If you want to try it, i guess doing composer install, and migrations should be enough. To make it running. 
+PS. if i remember correctly the dev db was configured only in env.local - so thats one more point to improve on.
