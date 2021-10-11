@@ -22,15 +22,16 @@ Touch ups on symphony, less legacy php and actual work with currency rates
   Working command "app:rates-update"/src/Command/RatesUpdateCommand.php that invokes the correct connector depending on configuration of
 "rates_connector_source" in config/services.yaml First intention was to have this parameter set up in .env files, but after some more 
 pondering on tutorials i felt that the services.yaml is the correct place for such a configuration.
+
   Connectors for respective services, that are able to parse the current xml responses of the given resources, and return a common/expected
 collection of data transfer objects with validation mar up attached. Xml parsing took it's sweet time, and honestly I gave in to stack overflow solution
 for Ecb parser (it was durign the first night call to give up and go to sleep). In a better situation, i would have given more thought dividing the response
 retrieval and response body parsing into separate services, with their own interfaces.
+
   An api controller that deals with rate converstion requests. Its not a fully restfull api by a mile, ust a quirky way to request conversion values that i 
 grown to like, purely semanthycally. The controller itself has quite a few problems, as I feel it. First one - the input validation is far too cumbersome, and i'm
-absolutely sure there is a nicer and cleaner way to achieve input validation. Currenry rate retireval from ORM and conversion, that should have been in its separate
-service for sure, and should have been a single line call in the api controller instead ot the whole flawed logic. I immensely failed with the conversion formulae,
-and even more with failing to try the MoneyPHP. Initially I was preparing the entities and the dto to work out with MoneyPHP.
+absolutely sure there is a nicer and cleaner way to achieve input validation. Currenry rate retireval from ORM and conversion, that should have been in its separate service for sure, and should have been a single line call in the api controller instead ot the whole flawed logic. I immensely failed with the conversion formulae, and even more with failing to try the MoneyPHP. Initially I was preparing the entities and the dto to work out with MoneyPHP.
+
   Absolutely lacking logging, this was intentianlly ignored during developement, to not overspend time on it and get to a functioning MVP.
 
 ## What changes i went trough during the weekend 1,5 days(or nights) of symfony
