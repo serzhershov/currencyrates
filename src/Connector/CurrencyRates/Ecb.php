@@ -2,11 +2,11 @@
 
 namespace App\Connector\CurrencyRates;
 
-use App\Connector\AbstractConnector;
+use App\Connector\HttpConnector;
 use App\Utility\Collection;
 use Symfony\Component\DomCrawler\Crawler;
 
-class Ecb extends AbstractConnector implements RatesRetrieval
+class Ecb extends HttpConnector implements RatesResolver
 {
     protected $targetUri = 'https://www.ecb.europa.eu';
     protected $baseCurrency = 'EUR';
@@ -26,7 +26,7 @@ class Ecb extends AbstractConnector implements RatesRetrieval
         $node1 = $doc->getElementsByTagName('Cube')->item(0);
         foreach ($node1->childNodes as $node2) {
             foreach ($node2->childNodes as $node3) {
-                $attributes[] = new CurrencyRatesDTO(
+                $attributes[] = new CurrencyRates(
                     (new \ReflectionClass($this))->getShortName(),
                     $node3->getAttribute('currency'),
                     $this->baseCurrency,

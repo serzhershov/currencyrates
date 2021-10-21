@@ -20,7 +20,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validation;
 
 
-class Convert extends AbstractController
+class ExchangeRateConversionController extends AbstractController
 {
     /**
      * @Route("/api", name="index", methods={"GET"})
@@ -40,6 +40,8 @@ class Convert extends AbstractController
      */
     public function getExchangeQuote(string $currencyFrom, string $currencyTo, int $amount, Request $request): JsonResponse
     {
+        //@todo: trim
+        //@todo: introduce request parameter dto with validation in constructor, modify response and try catch block accordingly
         $validator = Validation::createValidator();
         $violations = [
             'from' => function () use ($validator, $currencyFrom) {
@@ -67,6 +69,7 @@ class Convert extends AbstractController
             return new JsonResponse(['Constraint_validation_errors' => $errorData]);
         }
 
+        //@todo: all the conversion logic must be moved to a service with a single function call, providing the earlier created request dto, with from/to/amount fields
         if ($currencyFrom === $currencyTo) {
             return new JsonResponse(['requested_amount' => $amount ,'converted_amount' => $amount, 'direction' => "$currencyFrom -> $currencyTo"]);
         }
@@ -113,6 +116,7 @@ class Convert extends AbstractController
             $destinationRate = $latestDestinationData->getRate() / $latestDestinationData->getNominal();
         }
 
+        //@todo: either involve phpmoney, or use bc_math for proper rounding
         // i am ashamed =_= but let me explain, how a person with MBA in business administration still can't convert currencies
         if ($this->getParameter('rates_connector_source') === 'Ecb') {
             $conversionResult = number_format($amount / ($sourceRate / $destinationRate), Currencies::getFractionDigits($currencyTo), '.', '');

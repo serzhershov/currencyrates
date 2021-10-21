@@ -26,6 +26,7 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
+    # @todo: rework the factory in favour of proper DI
     App\Connector\CurrencyRates\RatesRetrieval:
         factory:    ['App\Utility\RatesRetrievalConnectorFactory', 'createRatesRetrievalConnector']
         arguments:  ['%rates_connector_source%']

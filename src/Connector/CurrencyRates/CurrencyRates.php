@@ -4,7 +4,10 @@ namespace App\Connector\CurrencyRates;
 
 use \Symfony\Component\Validator\Constraints as Assert;
 
-class CurrencyRatesDTO
+/**
+ * @todo: field names to camelCase
+ */
+class CurrencyRates
 {
     /**
      * iso currency code of the target currency

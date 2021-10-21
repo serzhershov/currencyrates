@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Extend this with properly setting required parameters: $targetUri
  */
-class AbstractConnector
+abstract class HttpConnector
 {
     /**
      * @var \GuzzleHttp\Client

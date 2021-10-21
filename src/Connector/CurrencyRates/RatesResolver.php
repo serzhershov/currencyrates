@@ -4,7 +4,7 @@ namespace App\Connector\CurrencyRates;
 
 use App\Utility\Collection;
 
-interface RatesRetrieval
+interface RatesResolver
 {
     /**
      * @return Collection

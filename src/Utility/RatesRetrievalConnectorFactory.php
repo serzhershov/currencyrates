@@ -2,17 +2,20 @@
 
 namespace App\Utility;
 
-use App\Connector\CurrencyRates\RatesRetrieval;
+use App\Connector\CurrencyRates\RatesResolver;
 use App\Connector\CurrencyRates\Ecb;
 use App\Connector\CurrencyRates\Cbr;
 
+/**
+ * @todo: remove in favor of services.yaml configured dependency injection
+ */
 class RatesRetrievalConnectorFactory
 {
     /**
      * @param string $source
-     * @return RatesRetrieval
+     * @return RatesResolver
      */
-    public static function createRatesRetrievalConnector(string $source): RatesRetrieval
+    public static function createRatesRetrievalConnector(string $source): RatesResolver
     {
         $connectors = [
             Ecb::class => function () {

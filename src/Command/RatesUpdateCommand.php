@@ -3,8 +3,8 @@
 namespace App\Command;
 
 
-use App\Connector\CurrencyRates\CurrencyRatesDTO;
-use App\Connector\CurrencyRates\RatesRetrieval;
+use App\Connector\CurrencyRates\CurrencyRates;
+use App\Connector\CurrencyRates\RatesResolver;
 use App\Controller\Service\CurrencyRatesController;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,7 +19,7 @@ class RatesUpdateCommand extends Command
     protected static $defaultDescription = 'Update rates database with connector data';
 
     /**
-     * @var RatesRetrieval
+     * @var RatesResolver
      */
     private $ratesRetrievalConnector;
     /**
@@ -32,25 +32,14 @@ class RatesUpdateCommand extends Command
     private $currencyRatesController;
 
     /**
-     * @param RatesRetrieval $ratesRetrieval\
+     * @param RatesResolver $ratesRetrieval\
      */
-    public function __construct(RatesRetrieval $ratesRetrieval, CurrencyRatesController $currencyRatesController)
+    public function __construct(RatesResolver $ratesRetrieval, CurrencyRatesController $currencyRatesController)
     {
         $this->ratesRetrievalConnector = $ratesRetrieval;
         $this->currencyRatesController = $currencyRatesController;
         $this->validator = Validation::createValidator();
         parent::__construct();
-    }
-
-    /**
-     * @return void
-     */
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-        ;
     }
 
     /**
@@ -60,19 +49,22 @@ class RatesUpdateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        //@todo move validation to dto creation stage
         $ratesCollection = $this->ratesRetrievalConnector->getRatesCollection();
         $violations = [];
         $ratesCollection->each(function($key, $rate) use (&$violations) {
-            /** @var CurrencyRatesDTO $rate */
-            foreach (CurrencyRatesDTO::getPropertiesList() as $property) {
+            /** @var CurrencyRates $rate */
+            foreach (CurrencyRates::getPropertiesList() as $property) {
                 $violations[] = $this->validator->validateProperty($rate, $property);
             }
             array_walk($violations, function($violation) {
                 /** @var \Symfony\Component\Validator\ConstraintViolationList $violation */
                 if ($violation->count()) {
+                    //@todo: catch exception and return command::fail result
                     throw new \RuntimeException($violation);
                 }
             });
+            //@todo move saving to repository controller
             $this->currencyRatesController->saveCurrencyRatesByDto($rate);
         });
 

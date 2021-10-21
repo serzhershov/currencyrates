@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Connector\CurrencyRates\CurrencyRatesDTO;
+use App\Connector\CurrencyRates\CurrencyRates;
 use App\Repository\ExchangeRateRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -199,10 +199,10 @@ class ExchangeRate
     }
 
     /**
-     * @param CurrencyRatesDTO $currencyRatesDTO
+     * @param CurrencyRates $currencyRatesDTO
      * @return ExchangeRate
      */
-    public static function makeFromCurrencyRatesDTO(CurrencyRatesDTO $currencyRatesDTO): ExchangeRate
+    public static function makeFromCurrencyRatesDTO(CurrencyRates $currencyRatesDTO): ExchangeRate
     {
         $entity = new self();
         return $entity

@@ -2,11 +2,11 @@
 
 namespace App\Connector\CurrencyRates;
 
-use App\Connector\AbstractConnector;
+use App\Connector\HttpConnector;
 use App\Utility\Collection;
 use Symfony\Component\DomCrawler\Crawler;
 
-class Cbr extends AbstractConnector implements RatesRetrieval
+class Cbr extends HttpConnector implements RatesResolver
 {
     protected $targetUri = 'https://www.cbr.ru';
     protected $baseCurrency = 'RUB';
@@ -28,7 +28,7 @@ class Cbr extends AbstractConnector implements RatesRetrieval
                 foreach($node->children() as $child) {
                     $res[$child->nodeName] = $child->nodeValue;
                 }
-                return new CurrencyRatesDTO(
+                return new CurrencyRates(
                     (new \ReflectionClass($this))->getShortName(),
                     $res['CharCode'],
                     $this->baseCurrency,
