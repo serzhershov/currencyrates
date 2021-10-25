@@ -40,4 +40,9 @@ class Cbr extends HttpConnector implements RatesResolver
 
         return new Collection($attributes);
     }
+
+    public function getSource(): string
+    {
+        return 'cbr';
+    }
 }

@@ -2,16 +2,12 @@
 
 namespace App\Command;
 
-
 use App\Connector\CurrencyRates\CurrencyRates;
 use App\Connector\CurrencyRates\RatesResolver;
 use App\Controller\Service\CurrencyRatesController;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Validator\Validation;
 
 class RatesUpdateCommand extends Command
 {
@@ -22,23 +18,22 @@ class RatesUpdateCommand extends Command
      * @var RatesResolver
      */
     private $ratesRetrievalConnector;
-    /**
-     * @var Validation
-     */
-    private $validator;
+
     /**
      * @var CurrencyRatesController
      */
     private $currencyRatesController;
 
     /**
-     * @param RatesResolver $ratesRetrieval\
+     * @param RatesResolver $ratesRetrieval
+     * @param CurrencyRatesController $currencyRatesController
      */
-    public function __construct(RatesResolver $ratesRetrieval, CurrencyRatesController $currencyRatesController)
-    {
+    public function __construct(
+        RatesResolver $ratesRetrieval,
+        CurrencyRatesController $currencyRatesController
+    ) {
         $this->ratesRetrievalConnector = $ratesRetrieval;
         $this->currencyRatesController = $currencyRatesController;
-        $this->validator = Validation::createValidator();
         parent::__construct();
     }
 

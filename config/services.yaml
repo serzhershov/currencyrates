@@ -4,8 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    rates_connector_source: 'Cbr'
-    # options are 'Cbr' || 'Ecb', and they affect booth the connector/data improt command, and the resulting currency conversion api
+    app.source: 'ecb'
 
 services:
     # default configuration for services in *this* file
@@ -26,7 +25,12 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    # @todo: rework the factory in favour of proper DI
-    App\Connector\CurrencyRates\RatesRetrieval:
-        factory:    ['App\Utility\RatesRetrievalConnectorFactory', 'createRatesRetrievalConnector']
-        arguments:  ['%rates_connector_source%']
+    _instanceof:
+        App\Connector\CurrencyRates\RatesResolver:
+            tags: ['app.rates_resolver_strategies']
+
+    App\Connector\CurrencyRates\RatesResolver:
+        factory:    ['App\Utility\RatesResolverFactory', 'provideResolver']
+        arguments:
+            $source: '%app.source%'
+            $resolvers: !tagged_iterator app.rates_resolver_strategies

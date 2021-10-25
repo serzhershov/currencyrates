@@ -10,4 +10,6 @@ interface RatesResolver
      * @return Collection
      */
     public function getRatesCollection() : Collection;
+
+    public function getSource() : string;
 }
