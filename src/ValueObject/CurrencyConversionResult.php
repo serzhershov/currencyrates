@@ -8,10 +8,10 @@ use \Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validation;
 
 /**
- * Request to process currency conversion
+ * Result of processing the currency conversion operation
  * string $sourceCurrency, string $targetCurrency, string $amount
  */
-class CurrencyConversionRequest
+class CurrencyConversionResult
 {
     use ToArray;
 
@@ -38,15 +38,23 @@ class CurrencyConversionRequest
     private $amount;
 
     /**
+     * @var CurrencyConversionRequest
+     * @Assert\Type("\App\ValueObject\CurrencyConversionRequest")
+     */
+    private $originalRequest;
+
+    /**
      * @param string $sourceCurrency
      * @param string $targetCurrency
      * @param string $amount
+     * @param CurrencyConversionRequest $request
      */
-    public function __construct(string $sourceCurrency, string $targetCurrency, string $amount)
+    public function __construct(string $sourceCurrency, string $targetCurrency, string $amount, CurrencyConversionRequest $request)
     {
         $this->sourceCurrency = mb_strtoupper($sourceCurrency);
         $this->targetCurrency = mb_strtoupper($targetCurrency);
         $this->amount = $amount;
+        $this->originalRequest = $request;
 
         $validator = Validation::createValidatorBuilder()
             ->enableAnnotationMapping(true)
@@ -82,4 +90,21 @@ class CurrencyConversionRequest
     {
         return $this->amount;
     }
+
+    /**
+     * @return CurrencyConversionRequest
+     */
+    public function getOriginalRequest(): CurrencyConversionRequest
+    {
+        return $this->originalRequest;
+    }
+
+    /**
+     * @param CurrencyConversionRequest $originalRequest
+     */
+    public function setOriginalRequest(CurrencyConversionRequest $originalRequest): void
+    {
+        $this->originalRequest = $originalRequest;
+    }
+
 }

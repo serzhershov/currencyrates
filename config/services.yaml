@@ -34,3 +34,11 @@ services:
         arguments:
             $source: '%app.source%'
             $resolvers: !tagged_iterator app.rates_resolver_strategies
+
+    App\Repository\ExchangeRateRepository:
+        calls:
+            - setAppSource: ['%app.source%']
+
+    App\Service\CurrencyRateCalculator:
+        calls:
+            - setAppSource: ['%app.source%']

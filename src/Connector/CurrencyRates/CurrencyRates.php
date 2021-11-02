@@ -2,11 +2,10 @@
 
 namespace App\Connector\CurrencyRates;
 
+use App\Utility\ConstraintViolationListParser;
 use \Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validation;
 
-/**
- * @todo: field names to camelCase
- */
 class CurrencyRates
 {
     /**
@@ -41,7 +40,7 @@ class CurrencyRates
     /**
      * date when the given rate was actual fot
      * @var \DateTime
-     * @Assert\DateTime
+     * @Assert\Type("\DateTime")
      * @Assert\NotBlank
      */
     private $rate_date;
@@ -52,14 +51,6 @@ class CurrencyRates
      * @Assert\NotBlank
      */
     private $source;
-
-    /**
-     * Get the list of available properties
-     * @return string[]
-     */
-    public static function getPropertiesList() {
-        return array_keys(get_class_vars(self::class));
-    }
 
     /**
      * @param string $source
@@ -84,6 +75,16 @@ class CurrencyRates
         $this->rate = $rate;
         $this->nominal = $nominal;
         $this->rate_date = $rate_date;
+
+        $validator = Validation::createValidatorBuilder()
+            ->enableAnnotationMapping(true)
+            ->addDefaultDoctrineAnnotationReader()
+            ->getValidator();
+
+        $violation = $validator->validate($this);
+        if (count($violation)) {
+            throw new \InvalidArgumentException(ConstraintViolationListParser::getString($violation));
+        }
     }
 
     /**

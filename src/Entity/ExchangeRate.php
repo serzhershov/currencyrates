@@ -4,7 +4,9 @@ namespace App\Entity;
 
 use App\Connector\CurrencyRates\CurrencyRates;
 use App\Repository\ExchangeRateRepository;
+use App\Utility\ConstraintViolationListParser;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Validation;
 
 /**
  * @ORM\Entity(repositoryClass=ExchangeRateRepository::class)
@@ -199,20 +201,38 @@ class ExchangeRate
     }
 
     /**
-     * @param CurrencyRates $currencyRatesDTO
-     * @return ExchangeRate
+     * @param string $base_currency
+     * @param string $currency_iso_code
+     * @param int $nominal
+     * @param string $rate
+     * @param \DateTime $rate_date
+     * @param string $source
      */
-    public static function makeFromCurrencyRatesDTO(CurrencyRates $currencyRatesDTO): ExchangeRate
+    public function __construct(
+        string $base_currency,
+        string $currency_iso_code,
+        int $nominal,
+        string $rate,
+        \DateTime $rate_date,
+        string $source
+    )
     {
-        $entity = new self();
-        return $entity
-            ->setCreated(new \DateTime())
-            ->setBaseCurrency($currencyRatesDTO->getBaseCurrency())
-            ->setCurrencyIsoCode($currencyRatesDTO->getCurrencyIsoCode())
-            ->setNominal($currencyRatesDTO->getNominal())
-            ->setRate($currencyRatesDTO->getRate())
-            ->setRateDate($currencyRatesDTO->getRateDate())
-            ->setSource($currencyRatesDTO->getSource())
-            ;
+            $this->setCreated(new \DateTime());
+            $this->setBaseCurrency($base_currency);
+            $this->setCurrencyIsoCode($currency_iso_code);
+            $this->setNominal($nominal);
+            $this->setRate($rate);
+            $this->setRateDate($rate_date);
+            $this->setSource($source);
+
+        $validator = Validation::createValidatorBuilder()
+            ->enableAnnotationMapping(true)
+            ->addDefaultDoctrineAnnotationReader()
+            ->getValidator();
+
+        $violation = $validator->validate($this);
+        if (count($violation)) {
+            throw new \InvalidArgumentException(ConstraintViolationListParser::getString($violation));
+        }
     }
 }

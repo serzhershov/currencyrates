@@ -2,9 +2,8 @@
 
 namespace App\Command;
 
-use App\Connector\CurrencyRates\CurrencyRates;
+use App\Repository\ExchangeRateRepository;
 use App\Connector\CurrencyRates\RatesResolver;
-use App\Controller\Service\CurrencyRatesController;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,22 +17,21 @@ class RatesUpdateCommand extends Command
      * @var RatesResolver
      */
     private $ratesRetrievalConnector;
-
     /**
-     * @var CurrencyRatesController
+     * @var ExchangeRateRepository
      */
-    private $currencyRatesController;
+    private $exchangeRateRepository;
 
     /**
      * @param RatesResolver $ratesRetrieval
-     * @param CurrencyRatesController $currencyRatesController
+     * @param ExchangeRateRepository $exchangeRateRepository
      */
     public function __construct(
         RatesResolver $ratesRetrieval,
-        CurrencyRatesController $currencyRatesController
+        ExchangeRateRepository $exchangeRateRepository
     ) {
         $this->ratesRetrievalConnector = $ratesRetrieval;
-        $this->currencyRatesController = $currencyRatesController;
+        $this->exchangeRateRepository = $exchangeRateRepository;
         parent::__construct();
     }
 
@@ -44,24 +42,17 @@ class RatesUpdateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        //@todo move validation to dto creation stage
-        $ratesCollection = $this->ratesRetrievalConnector->getRatesCollection();
-        $violations = [];
-        $ratesCollection->each(function($key, $rate) use (&$violations) {
-            /** @var CurrencyRates $rate */
-            foreach (CurrencyRates::getPropertiesList() as $property) {
-                $violations[] = $this->validator->validateProperty($rate, $property);
-            }
-            array_walk($violations, function($violation) {
-                /** @var \Symfony\Component\Validator\ConstraintViolationList $violation */
-                if ($violation->count()) {
-                    //@todo: catch exception and return command::fail result
-                    throw new \RuntimeException($violation);
-                }
-            });
-            //@todo move saving to repository controller
-            $this->currencyRatesController->saveCurrencyRatesByDto($rate);
-        });
+        $output->writeln("0. starting exchange rate import from: " . $this->ratesRetrievalConnector->getSource());
+        try {
+            $ratesCollection = $this->ratesRetrievalConnector->getRatesCollection();
+            $output->writeln("1. rates data acquired");
+            $this->exchangeRateRepository->persistRatesCollection($ratesCollection);
+            $output->writeln("2. rates data saved");
+        } catch (\Exception $e) {
+            $output->writeln("E: failed to import rates: ");
+            $output->writeln($e->getMessage());
+            return Command::FAILURE;
+        }
 
         return Command::SUCCESS;
     }
