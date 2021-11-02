@@ -9,7 +9,7 @@ use App\ValueObject\CurrencyConversionResult;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Intl\Currencies;
 
-class CurrencyRateCalculator extends AbstractController
+class CurrencyRateCalculator
 {
     /**
      * @var ExchangeRateRepository
