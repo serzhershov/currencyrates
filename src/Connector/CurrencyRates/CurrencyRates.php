@@ -6,7 +6,7 @@ use App\Utility\ConstraintViolationListParser;
 use \Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validation;
 
-class CurrencyRates
+final class CurrencyRates
 {
     /**
      * iso currency code of the target currency
@@ -14,7 +14,7 @@ class CurrencyRates
      * @Assert\Currency
      * @Assert\NotBlank
      */
-    private $currency_iso_code;
+    private string $currencyIsoCode;
 
     /**
      * iso currency code of the base currency
@@ -22,20 +22,20 @@ class CurrencyRates
      * @Assert\Currency
      * @Assert\NotBlank
      */
-    private $base_currency;
+    private string $baseCurrency;
 
     /**
      * rate
      * @var string
      * @Assert\NotBlank
      */
-    private $rate;
+    private string $rate;
 
     /**
      * @var int
      * @Assert\NotNull
      */
-    private $nominal;
+    private int $nominal;
 
     /**
      * date when the given rate was actual fot
@@ -43,38 +43,38 @@ class CurrencyRates
      * @Assert\Type("\DateTime")
      * @Assert\NotBlank
      */
-    private $rate_date;
+    private \DateTime $rateDate;
 
     /**
      * rate
      * @var string
      * @Assert\NotBlank
      */
-    private $source;
+    private string $source;
 
     /**
      * @param string $source
-     * @param string $currency_iso_code
-     * @param string $base_currency
+     * @param string $currencyIsoCode
+     * @param string $baseCurrency
      * @param string $rate
      * @param int $nominal
-     * @param \DateTime $rate_date
+     * @param \DateTime $rateDate
      */
     public function __construct(
-        string $source,
-        string $currency_iso_code,
-        string $base_currency,
-        string $rate,
-        int $nominal,
-        \DateTime $rate_date
+        string    $source,
+        string    $currencyIsoCode,
+        string    $baseCurrency,
+        string    $rate,
+        int       $nominal,
+        \DateTime $rateDate
     )
     {
         $this->source = $source;
-        $this->currency_iso_code = $currency_iso_code;
-        $this->base_currency = $base_currency;
+        $this->currencyIsoCode = $currencyIsoCode;
+        $this->baseCurrency = $baseCurrency;
         $this->rate = $rate;
         $this->nominal = $nominal;
-        $this->rate_date = $rate_date;
+        $this->rateDate = $rateDate;
 
         $validator = Validation::createValidatorBuilder()
             ->enableAnnotationMapping(true)
@@ -92,7 +92,7 @@ class CurrencyRates
      */
     public function getCurrencyIsoCode(): string
     {
-        return $this->currency_iso_code;
+        return $this->currencyIsoCode;
     }
 
     /**
@@ -100,7 +100,7 @@ class CurrencyRates
      */
     public function getBaseCurrency(): string
     {
-        return $this->base_currency;
+        return $this->baseCurrency;
     }
 
     /**
@@ -124,7 +124,7 @@ class CurrencyRates
      */
     public function getRateDate(): \DateTime
     {
-        return $this->rate_date;
+        return $this->rateDate;
     }
 
     /**

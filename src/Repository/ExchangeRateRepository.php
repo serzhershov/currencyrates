@@ -19,7 +19,7 @@ class ExchangeRateRepository extends ServiceEntityRepository
     /**
      * @var string
      */
-    private $appSource;
+    private string $appSource;
 
     /**
      * @param ManagerRegistry $registry
@@ -46,10 +46,10 @@ class ExchangeRateRepository extends ServiceEntityRepository
         return $this->findOneBy(
             [
                 'source' => $this->appSource,
-                'currency_iso_code' => $currencyIsoCode
+                'currencyIsoCode' => $currencyIsoCode
             ],
             [
-                'rate_date' => 'ASC',
+                'rateDate' => 'ASC',
                 'created' => 'ASC'
             ]
         );
@@ -63,7 +63,7 @@ class ExchangeRateRepository extends ServiceEntityRepository
         $result = null;
         $entity = $this->findOneBy(
             ['source' => $this->appSource],
-            ['rate_date' => 'ASC', 'created' => 'ASC']
+            ['rateDate' => 'ASC', 'created' => 'ASC']
         );
         if ($entity) {
             $result = $entity->getBaseCurrency();

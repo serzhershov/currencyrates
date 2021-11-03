@@ -8,13 +8,15 @@ use Symfony\Component\Console\Application;
 use App\Command\RatesUpdateCommand;
 use App\Repository\ExchangeRateRepository;
 
+/**
+ * @covers \App\Command\RatesUpdateCommand
+ */
 final class RatesUpdateCommandTest extends KernelTestCase
 {
     public function testConfiguredRatesImportSuccessfully(): void
     {
         self::bootKernel();
         $container = static::getContainer();
-
 
         $application = new Application('echo', '1.0.0');
         $command = $container->get(RatesUpdateCommand::class);
@@ -27,13 +29,9 @@ final class RatesUpdateCommandTest extends KernelTestCase
         $commandTester->execute(['command' => $command->getName()]);
 
         $result = $commandTester->getDisplay(true);
-        dump($result);
         $this->assertStringContainsString('0. starting exchange rate import from:', $result);
         $this->assertStringContainsString('1. rates data acquired', $result);
         $this->assertStringContainsString('2. rates data saved', $result);
         $this->assertNotCount(0, $ratesRepository->findAll());
-
     }
-
-
 }

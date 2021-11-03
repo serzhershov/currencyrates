@@ -26,9 +26,9 @@ class ExchangeRate
     private $created;
 
     /**
-     * @ORM\Column(type="string", length=3)
+     * @ORM\Column(type="string", length=3, name="currency_iso_code")
      */
-    private $currency_iso_code;
+    private $currencyIsoCode;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -36,9 +36,9 @@ class ExchangeRate
     private $rate;
 
     /**
-     * @ORM\Column(type="string", length=3)
+     * @ORM\Column(type="string", length=3, name="base_currency")
      */
-    private $base_currency;
+    private $baseCurrency;
 
     /**
      * @ORM\Column(type="integer")
@@ -46,9 +46,9 @@ class ExchangeRate
     private $nominal;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", name="rate_date")
      */
-    private $rate_date;
+    private $rateDate;
 
     /**
      * @ORM\Column(type="string", length=3)
@@ -67,7 +67,7 @@ class ExchangeRate
      * @param mixed $id
      * @return ExchangeRate
      */
-    public function setId($id)
+    public function setId($id): ExchangeRate
     {
         $this->id = $id;
         return $this;
@@ -85,7 +85,7 @@ class ExchangeRate
      * @param mixed $created
      * @return ExchangeRate
      */
-    public function setCreated($created)
+    public function setCreated($created): ExchangeRate
     {
         $this->created = $created;
         return $this;
@@ -96,16 +96,16 @@ class ExchangeRate
      */
     public function getCurrencyIsoCode()
     {
-        return $this->currency_iso_code;
+        return $this->currencyIsoCode;
     }
 
     /**
-     * @param mixed $currency_iso_code
+     * @param mixed $currencyIsoCode
      * @return ExchangeRate
      */
-    public function setCurrencyIsoCode($currency_iso_code)
+    public function setCurrencyIsoCode($currencyIsoCode): ExchangeRate
     {
-        $this->currency_iso_code = $currency_iso_code;
+        $this->currencyIsoCode = $currencyIsoCode;
         return $this;
     }
 
@@ -121,7 +121,7 @@ class ExchangeRate
      * @param mixed $rate
      * @return ExchangeRate
      */
-    public function setRate($rate)
+    public function setRate($rate): ExchangeRate
     {
         $this->rate = $rate;
         return $this;
@@ -132,16 +132,16 @@ class ExchangeRate
      */
     public function getBaseCurrency()
     {
-        return $this->base_currency;
+        return $this->baseCurrency;
     }
 
     /**
-     * @param mixed $base_currency
+     * @param mixed $baseCurrency
      * @return ExchangeRate
      */
-    public function setBaseCurrency($base_currency)
+    public function setBaseCurrency($baseCurrency): ExchangeRate
     {
-        $this->base_currency = $base_currency;
+        $this->baseCurrency = $baseCurrency;
         return $this;
     }
 
@@ -157,7 +157,7 @@ class ExchangeRate
      * @param mixed $nominal
      * @return ExchangeRate
      */
-    public function setNominal($nominal)
+    public function setNominal($nominal): ExchangeRate
     {
         $this->nominal = $nominal;
         return $this;
@@ -168,16 +168,16 @@ class ExchangeRate
      */
     public function getRateDate()
     {
-        return $this->rate_date;
+        return $this->rateDate;
     }
 
     /**
-     * @param mixed $rate_date
+     * @param mixed $rateDate
      * @return ExchangeRate
      */
-    public function setRateDate($rate_date)
+    public function setRateDate($rateDate): ExchangeRate
     {
-        $this->rate_date = $rate_date;
+        $this->rateDate = $rateDate;
         return $this;
     }
 
@@ -194,35 +194,35 @@ class ExchangeRate
      * @param string $source
      * @return ExchangeRate
      */
-    public function setSource($source): ExchangeRate
+    public function setSource(string $source): ExchangeRate
     {
         $this->source = $source;
         return $this;
     }
 
     /**
-     * @param string $base_currency
-     * @param string $currency_iso_code
+     * @param string $baseCurrency
+     * @param string $currencyIsoCode
      * @param int $nominal
      * @param string $rate
-     * @param \DateTime $rate_date
+     * @param \DateTime $rateDate
      * @param string $source
      */
     public function __construct(
-        string $base_currency,
-        string $currency_iso_code,
-        int $nominal,
-        string $rate,
-        \DateTime $rate_date,
-        string $source
+        string    $baseCurrency,
+        string    $currencyIsoCode,
+        int       $nominal,
+        string    $rate,
+        \DateTime $rateDate,
+        string    $source
     )
     {
             $this->setCreated(new \DateTime());
-            $this->setBaseCurrency($base_currency);
-            $this->setCurrencyIsoCode($currency_iso_code);
+            $this->setBaseCurrency($baseCurrency);
+            $this->setCurrencyIsoCode($currencyIsoCode);
             $this->setNominal($nominal);
             $this->setRate($rate);
-            $this->setRateDate($rate_date);
+            $this->setRateDate($rateDate);
             $this->setSource($source);
 
         $validator = Validation::createValidatorBuilder()

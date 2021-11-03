@@ -19,7 +19,12 @@ class ConstraintViolationListParser
         foreach ($violations as $violation) {
             $paramName = $violation->getPropertyPath();
             $messages[$paramName][] = $violation->getMessage();
-            $messages[$paramName] = $violation->getPropertyPath() . ' - ' . implode(' ', $messages[$paramName]);
+            $messages[$paramName] = sprintf(
+                "{%s} set to {%s} failed validation with: %s",
+                $violation->getPropertyPath(),
+                $violation->getInvalidValue(),
+                implode(' ', $messages[$paramName])
+            );
         }
 
         return count($messages) ? implode(" ", $messages) : '';

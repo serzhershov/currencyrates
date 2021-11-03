@@ -9,16 +9,16 @@ use App\ValueObject\CurrencyConversionResult;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Intl\Currencies;
 
-class CurrencyRateCalculator
+final class CurrencyRateCalculator
 {
     /**
      * @var ExchangeRateRepository
      */
-    private $rateRepository;
+    private ExchangeRateRepository $rateRepository;
     /**
      * @var string
      */
-    private $appSource;
+    private string $appSource;
 
     /**
      * @param ExchangeRateRepository $exchangeRateRepository
@@ -52,28 +52,30 @@ class CurrencyRateCalculator
             );
         }
 
-        $sourceRate = 1;
+        $sourceRate = '1';
+        \bcscale(10);
         if ($conversionRequest->getSourceCurrency() !== $baseCurrency) {
             $latestSourceData = $this->rateRepository->getLatestCurrencyRates($conversionRequest->getSourceCurrency());
             if (!$latestSourceData) {
                 throw new \RuntimeException('Source currency data not found');
             }
-            $sourceRate = $latestSourceData->getRate() / $latestSourceData->getNominal();
+            $sourceRate = \bcdiv($latestSourceData->getRate(), $latestSourceData->getNominal());
         }
 
-        $destinationRate = 1;
+        $destinationRate = '1';
         if ($conversionRequest->getTargetCurrency() !== $baseCurrency) {
             $latestDestinationData = $this->rateRepository->getLatestCurrencyRates($conversionRequest->getTargetCurrency());
             if (!$latestDestinationData) {
                 throw new \RuntimeException('Destination currency data not found');
             }
-            $destinationRate = $latestDestinationData->getRate() / $latestDestinationData->getNominal();
+            $destinationRate = \bcdiv($latestDestinationData->getRate(), $latestDestinationData->getNominal());
         }
 
+        $dividedRates = \bcdiv($sourceRate, $destinationRate);
         if ($this->appSource === 'ecb') {
-            $conversionResult = $conversionRequest->getAmount() / ($sourceRate / $destinationRate);
+            $conversionResult = \bcdiv($conversionRequest->getAmount(), $dividedRates);
         } else {
-            $conversionResult = $conversionRequest->getAmount() * ($sourceRate / $destinationRate);
+            $conversionResult = \bcmul($conversionRequest->getAmount(), $dividedRates);
         }
 
         return new CurrencyConversionResult(

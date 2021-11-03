@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Validation;
  * Result of processing the currency conversion operation
  * string $sourceCurrency, string $targetCurrency, string $amount
  */
-class CurrencyConversionResult
+final class CurrencyConversionResult
 {
     use ToArray;
 
@@ -21,7 +21,7 @@ class CurrencyConversionResult
      * @Assert\Currency
      * @Assert\NotBlank
      */
-    private $sourceCurrency;
+    private string $sourceCurrency;
 
     /**
      * iso currency code of the target currency
@@ -29,19 +29,19 @@ class CurrencyConversionResult
      * @Assert\Currency
      * @Assert\NotBlank
      */
-    private $targetCurrency;
+    private string $targetCurrency;
 
     /**
      * @var string
      * @Assert\Positive()
      */
-    private $amount;
+    private string $amount;
 
     /**
      * @var CurrencyConversionRequest
      * @Assert\Type("\App\ValueObject\CurrencyConversionRequest")
      */
-    private $originalRequest;
+    private CurrencyConversionRequest $originalRequest;
 
     /**
      * @param string $sourceCurrency

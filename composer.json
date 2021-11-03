@@ -4,7 +4,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=7.4.3",
         "ext-ctype": "*",
         "ext-dom": "*",
         "ext-iconv": "*",
@@ -23,7 +23,8 @@
         "symfony/runtime": "5.3.*",
         "symfony/serializer": "5.3.*",
         "symfony/validator": "5.3.*",
-        "symfony/yaml": "5.3.*"
+        "symfony/yaml": "5.3.*",
+        "ext-bcmath": "*"
     },
     "require-dev": {
         "dama/doctrine-test-bundle": "^6.6",

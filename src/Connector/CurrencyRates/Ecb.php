@@ -6,10 +6,10 @@ use App\Connector\HttpConnector;
 use App\Utility\Collection;
 use Symfony\Component\DomCrawler\Crawler;
 
-class Ecb extends HttpConnector implements RatesResolver
+final class Ecb extends HttpConnector implements RatesResolver
 {
-    protected $targetUri = 'https://www.ecb.europa.eu';
-    protected $baseCurrency = 'EUR';
+    protected string $targetUri = 'https://www.ecb.europa.eu';
+    protected string $baseCurrency = 'EUR';
 
     /**
      * @inheritDoc
